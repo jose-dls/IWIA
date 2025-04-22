@@ -123,6 +123,10 @@ footer {
     margin-top: 20px;
 }
 
+footer a {
+    color: #2563eb;
+}
+
 /* Video Sections */
 
 #videosTab-container {
