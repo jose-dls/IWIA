@@ -8,17 +8,17 @@
 
 ## 📚 Table of Contents
 
-- [✨ Features](#features)
-- [🛠️ Coming Soon](#coming-soon)
-- [🚀 Getting Started](#getting-started)
-- [🖼️ Screenshots](#screenshots)
-- [⚙️ Options](#options)
-- [🛡️ Privacy](#privacy)
-- [⚠️ Known Limitations](#known-limitations)
-- [🤝 Contributing](#contributing)
-    - [🐞 Bug Report Template](#bug-report-template)
-- [📝 License](#license)
-- [📫 Contact](#contact)
+- [✨ Features](#-features)
+- [🛠️ Coming Soon](#-coming-soon)
+- [🚀 Getting Started](#-getting-started)
+- [🖼️ Screenshots](#-screenshots)
+- [⚙️ Options](#-options)
+- [🛡️ Privacy](#-privacy)
+- [⚠️ Known Limitations](#-known-limitations)
+- [🤝 Contributing](#-contributing)
+    - [🐞 Bug Report Template](#-bug-report-template)
+- [📝 License](#-license)
+- [📫 Contact](#-contact)
 
 ---
 
