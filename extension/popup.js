@@ -81,14 +81,14 @@ const renderSettings = () => {
         const div = document.createElement('div');
         div.className = 'video-entry';
         div.innerHTML = `
-            <input type="text" value="${video.title}" data-id="${video.addedAt}" class="edit-title"><br>
-            <input type="text" value="${video.url || ''}" placeholder="Link" data-id="${video.addedAt}" class="edit-link"><br>
-            <select data-id="${video.addedAt}" class="edit-status">
+            <input type="text" value="${video.title}" data-id="${video.id}" class="edit-title"><br>
+            <input type="text" value="${video.url || ''}" placeholder="Link" data-id="${video.id}" class="edit-link"><br>
+            <select data-id="${video.id}" class="edit-status">
               <option value="planning" ${video.status === 'planning' ? 'selected' : ''}>Planning</option>
               <option value="watching" ${video.status === 'watching' ? 'selected' : ''}>Watching</option>
               <option value="watched" ${video.status === 'watched' ? 'selected' : ''}>Watched</option>
             </select><br>
-            <button class="delete" data-id="${video.addedAt}">Remove</button>
+            <button class="delete" data-id="${video.id}">Remove</button>
           `;
         sectionContent.appendChild(div);
       });
@@ -116,8 +116,8 @@ const renderSettings = () => {
     // Add event listeners
     document.querySelectorAll('.edit-title').forEach(input => {
       input.addEventListener('input', e => {
-        const id = e.target.dataset.id; // Use data-id (addedAt) as the unique identifier
-        const video = videos.find(v => v.addedAt === id); // Find the correct video
+        const id = e.target.dataset.id; // Use data-id (id) as the unique identifier
+        const video = videos.find(v => v.id === id); // Find the correct video
         if (video) {
           video.title = e.target.value; // Update the title
           saveVideos(videos, false); // Save changes without re-rendering
@@ -127,8 +127,8 @@ const renderSettings = () => {
 
     document.querySelectorAll('.edit-link').forEach(input => {
       input.addEventListener('input', e => {
-        const id = e.target.dataset.id; // Use data-id (addedAt) as the unique identifier
-        const video = videos.find(v => v.addedAt === id); // Find the correct video
+        const id = e.target.dataset.id; // Use data-id (id) as the unique identifier
+        const video = videos.find(v => v.id === id); // Find the correct video
         if (video) {
           video.url = e.target.value; // Update the URL
           saveVideos(videos, false); // Save changes without re-rendering
@@ -138,8 +138,8 @@ const renderSettings = () => {
 
     document.querySelectorAll('.edit-status').forEach(select => {
       select.addEventListener('change', e => {
-        const id = e.target.dataset.id; // Use data-id (addedAt) as the unique identifier
-        const video = videos.find(v => v.addedAt === id); // Find the correct video
+        const id = e.target.dataset.id; // Use data-id (id) as the unique identifier
+        const video = videos.find(v => v.id === id); // Find the correct video
         if (video) {
           video.status = e.target.value; // Update the status
           saveVideos(videos); // Save changes and re-render
@@ -149,8 +149,8 @@ const renderSettings = () => {
 
     document.querySelectorAll('.delete').forEach(btn => {
       btn.addEventListener('click', e => {
-        const id = e.target.dataset.id; // Use data-id (addedAt) as the unique identifier
-        const index = videos.findIndex(v => v.addedAt === id); // Find the correct index
+        const id = e.target.dataset.id; // Use data-id (id) as the unique identifier
+        const index = videos.findIndex(v => v.id === id); // Find the correct index
         if (index !== -1) {
           videos.splice(index, 1); // Remove the video from the array
           saveVideos(videos); // Save changes and re-render
@@ -203,6 +203,14 @@ document.getElementById('disableSiteToggle').addEventListener('change', async (e
   });
 });
 
+function generateUUID() {
+  // RFC4122 version 4 compliant UUID
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 document.getElementById('addManual').addEventListener('click', () => {
   const titleInput = document.getElementById('titleInput');
   const linkInput = document.getElementById('linkInput');
@@ -215,6 +223,7 @@ document.getElementById('addManual').addEventListener('click', () => {
   if (title) {
     chrome.storage.local.get({ videos: [] }, ({ videos }) => {
       videos.push({
+        id: generateUUID(),
         title,
         url: url || null,
         status: status || 'planning', // Default to 'planning' if no status is selected
@@ -248,3 +257,76 @@ document.getElementById('videosTabButton').addEventListener('click', () => {
 });
 
 renderSettings();
+
+// Export videos as CSV
+document.getElementById('exportCSV').addEventListener('click', () => {
+  chrome.storage.local.get({ videos: [] }, ({ videos }) => {
+    const header = ['id', 'title', 'url', 'status', 'auto', 'addedAt'];
+    const rows = videos.map(v =>
+      header.map(key => `"${(v[key] ?? '').toString().replace(/"/g, '""')}"`).join(',')
+    );
+    const csv = [header.join(','), ...rows].join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'iwia_videos.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+});
+
+// Import videos from CSV
+document.getElementById('importCSV').addEventListener('click', () => {
+  document.getElementById('csvFileInput').click();
+});
+
+document.getElementById('csvFileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const text = event.target.result;
+    const lines = text.split(/\r?\n/).filter(Boolean);
+    if (lines.length < 2) return;
+    const header = lines[0].split(',').map(h => h.replace(/(^"|"$)/g, ''));
+    const videos = lines.slice(1).map(line => {
+      const values = [];
+      let inQuotes = false, value = '';
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"' && line[i + 1] === '"') {
+          value += '"'; i++;
+        } else if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          values.push(value); value = '';
+        } else {
+          value += char;
+        }
+      }
+      values.push(value);
+      const obj = {};
+      header.forEach((h, idx) => obj[h] = values[idx] || '');
+      return {
+        id: obj.id || generateUUID(),
+        title: obj.title || '',
+        url: obj.url || '',
+        status: obj.status || 'planning',
+        auto: obj.auto === 'true',
+        addedAt: obj.addedAt || new Date().toISOString()
+      };
+    }).filter(v => v.title);
+
+    // Merge with existing videos, deduplicate by id
+    chrome.storage.local.get({ videos: [] }, ({ videos: existing }) => {
+      const map = new Map(existing.map(v => [v.id, v]));
+      videos.forEach(v => map.set(v.id, v));
+      saveVideos(Array.from(map.values()));
+    });
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});

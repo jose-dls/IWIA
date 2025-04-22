@@ -24,8 +24,9 @@ body {
 
 .video-entry {
     margin: 5px 0;
-    padding: 5px;
+    /* padding: 5px; */
     font-size: 14px;
+    overflow-x: hidden;
 }
 
 .video-entry input,
@@ -58,7 +59,7 @@ h1, h2, h3 {
     align-items: center;
     justify-content: space-between;
     margin: 0px;
-    margin-left: 5px;
+    /* margin-left: 5px; */
     padding: 0px;
     border: 0px;
     font-weight: 600;
@@ -124,17 +125,33 @@ footer {
 
 /* Video Sections */
 
-#videosTab {
+#videosTab-container {
     width: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+#videosTab-container > * {
+    width: 98%;
 }
 
 #videos {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-height: 300px;
-    overflow-y: auto;
     margin-top: 10px;
+}
+
+#importExportButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    gap: 5px;
 }
 
 .section-header {
@@ -153,7 +170,7 @@ footer {
 
 .section-header h3 {
     margin: 0;
-    margin-left: 5px;
+    /* margin-left: 5px; */
     font-weight: 600;
 }
 
@@ -178,6 +195,25 @@ footer {
     width: 100%; /* Ensure full width */
     margin-top: 2px;
     box-sizing: border-box; /* Include padding and border in width calculation */
+}
+
+button#addManual {
+    background-color: green;
+    color: white;
+    outline: 2px solid green;   /* draws inside without affecting layout */
+    outline-offset: -2px;       /* pulls the outline inside */
+}
+
+button.delete {
+    background-color: red;
+    color: white;
+    outline: 2px solid red;     /* draws inside without affecting layout */
+    outline-offset: -2px;       /* pulls the outline inside */
+}
+
+button#addManual:hover, button.delete:hover {
+    background-color: #e3e8ef;
+    color: black;
 }
 
 ::-webkit-scrollbar {

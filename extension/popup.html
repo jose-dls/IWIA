@@ -38,19 +38,36 @@
       </label>
     </label>
     <br>
-    <div class="video-entry">
-      <input id="titleInput" placeholder="Video title">
-      <input id="linkInput" placeholder="Optional link">
-      <select id="statusInput">
-        <option value="planning">Planning</option>
-        <option value="watching">Watching</option>
-        <option value="watched">Watched</option>
-      </select>
-      <button id="addManual">Add</button>
-    </div>
   </div>
   <div id="videosTab" class="tab-content">
-    <div id="videos"></div>
+    <div id="videosTab-container">
+      <div class="video-entry">
+        <div class="section-container">
+          <div class="section-header">
+            <h3>Add Video</h3>
+          </div>
+        </div>
+        <input id="titleInput" placeholder="Video title">
+        <input id="linkInput" placeholder="Optional link">
+        <select id="statusInput">
+          <option value="planning">Planning</option>
+          <option value="watching">Watching</option>
+          <option value="watched">Watched</option>
+        </select>
+        <button id="addManual">Add</button>
+      </div>
+      <div id="videos"></div>
+      <div id="importExportButtons">
+        <button id="exportCSV">Export CSV</button>
+        <button id="importCSV">Import CSV</button>
+        <input type="file" id="csvFileInput" accept=".csv" style="display:none;">
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <footer>
+      Made by <a href="https://www.josedls.dev/" target="_blank" rel="noopener noreferrer">J. De Los Santos</a>
+    </footer>
   </div>
   <script src="popup.js"></script>
 </body>
