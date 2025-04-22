@@ -1,4 +1,26 @@
 /* === popup.js === */
+const updateIcon = async () => {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const domain = getDomain(tab.url);
+
+  chrome.storage.local.get(
+    { hideWatched: true, extensionEnabled: true, disabledSites: [] },
+    ({ hideWatched, extensionEnabled, disabledSites }) => {
+      let iconPath = 'green.png'; // Default to green
+
+      if (!extensionEnabled) {
+        iconPath = 'green.png'; // Green if the extension is disabled
+      } else if (disabledSites.includes(domain)) {
+        iconPath = 'yellow.png'; // Yellow if the site is disabled
+      } else if (hideWatched) {
+        iconPath = 'red.png'; // Red if "Hide Watched from Pages" is active
+      }
+
+      chrome.action.setIcon({ path: iconPath });
+    }
+  );
+};
+
 const getDomain = (url) => {
   try {
     return new URL(url).hostname.replace(/^www\./, '');
@@ -47,7 +69,7 @@ const renderSettings = () => {
       const header = document.createElement('div');
       header.className = 'section-header';
       header.innerHTML = `
-          <h3><span class="toggle-section opened"></span> ${title}</h3>
+          <h3>${title}</h3><h3 class="toggle-section opened"></h3>
         `;
       sectionContainer.appendChild(header);
 
@@ -145,6 +167,7 @@ document.getElementById('hideToggle').addEventListener('change', (e) => {
         type: 'toggleHideWatched',
         hide: e.target.checked
       });
+      updateIcon();
     });
   });
 });
@@ -156,6 +179,7 @@ document.getElementById('enableExtensionToggle').addEventListener('change', (e) 
         type: 'toggleExtension',
         enabled: e.target.checked
       });
+      updateIcon();
     });
   });
 });
@@ -173,24 +197,36 @@ document.getElementById('disableSiteToggle').addEventListener('change', async (e
           type: 'updateDisabledSites',
           disabledSites: updated
         });
+        updateIcon();
       });
     });
   });
 });
 
 document.getElementById('addManual').addEventListener('click', () => {
-  const title = document.getElementById('titleInput').value.trim();
-  const url = document.getElementById('linkInput').value.trim();
+  const titleInput = document.getElementById('titleInput');
+  const linkInput = document.getElementById('linkInput');
+  const statusInput = document.getElementById('statusInput');
+
+  const title = titleInput.value.trim();
+  const url = linkInput.value.trim();
+  const status = statusInput.value; // Get the selected status
+
   if (title) {
     chrome.storage.local.get({ videos: [] }, ({ videos }) => {
       videos.push({
         title,
         url: url || null,
-        status: 'planning',
+        status: status || 'planning', // Default to 'planning' if no status is selected
         auto: false,
-        addedAt: new Date().toISOString()
+        addedAt: new Date().toISOString() // Use ISO timestamp as unique ID
       });
       saveVideos(videos);
+
+      // Clear the input fields
+      titleInput.value = '';
+      linkInput.value = '';
+      statusInput.value = 'planning'; // Reset the dropdown to default
     });
   }
 });
