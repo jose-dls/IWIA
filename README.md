@@ -9,12 +9,12 @@
 ## 📚 Table of Contents
 
 - [✨ Features](#-features)
-- [🛠️ Coming Soon](#-coming-soon)
+- [🛠️ Coming Soon](#%EF%B8%8F-coming-soon)
 - [🚀 Getting Started](#-getting-started)
-- [🖼️ Screenshots](#-screenshots)
-- [⚙️ Options](#-options)
-- [🛡️ Privacy](#-privacy)
-- [⚠️ Known Limitations](#-known-limitations)
+- [🖼️ Screenshots](#%EF%B8%8F-screenshots)
+- [⚙️ Options](#%EF%B8%8F-options)
+- [🛡️ Privacy](#%EF%B8%8F-privacy)
+- [⚠️ Known Limitations](#%EF%B8%8F-known-limitations)
 - [🤝 Contributing](#-contributing)
     - [🐞 Bug Report Template](#-bug-report-template)
 - [📝 License](#-license)
