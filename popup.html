@@ -1,0 +1,28 @@
+<!-- /* === popup.html === */ -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>I've Watched It Already</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <h1>I've Watched It Already</h1>
+  <div>
+    <button class="tab-button" id="mainTabButton">Main</button>
+    <button class="tab-button" id="videosTabButton">Videos List</button>
+  </div>
+  <div id="mainTab" class="tab-content">
+    <label><input type="checkbox" id="enableExtensionToggle"> Enable Extension</label><br>
+    <label><input type="checkbox" id="disableSiteToggle"> Disable on this site</label><br>
+    <label><input type="checkbox" id="hideToggle"> Hide Watched from pages</label><br>
+    <hr>
+    <input id="titleInput" placeholder="Video title">
+    <input id="linkInput" placeholder="Optional link">
+    <button id="addManual">Add</button>
+  </div>
+  <div id="videosTab" class="tab-content">
+    <div id="videos"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
