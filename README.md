@@ -48,7 +48,7 @@
 1. **Install the Extension**
 
     - **Local Installation**
-        1. [Download or clone this repository](https://github.com/jose-dls/iwia).
+        1. [Download the latest release ZIP](https://github.com/jose-dls/iwia/releases) **or** [clone this repository](https://github.com/jose-dls/iwia).
         2. Open Chrome and go to `chrome://extensions/`.
         3. Enable **Developer mode** (toggle in the top right).
         4. Click **Load unpacked** and select the project [extension](extension) folder (the one containing `manifest.json`).
